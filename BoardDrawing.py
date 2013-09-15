@@ -1,12 +1,6 @@
 import pygame
 pygame.init()
 
-#testing123
-##width = 400
-##height = 400
-##NUM_SQUARES = 8
-##SQUARE_WIDTH = width / NUM_SQUARES
-
 DISPLAY_SIZE = 400
 NUM_SQUARES = 8
 SQUARE_SIZE = DISPLAY_SIZE / NUM_SQUARES
@@ -79,6 +73,25 @@ class BoardDrawer:
         pygame.draw.circle(window, outlineColor, (colcenter, rowcenter), PIECE_RADIUS, CIRCLE_OUTLINE_WIDTH)
         pygame.draw.circle(window, color, (colcenter, rowcenter), PIECE_RADIUS - CIRCLE_OUTLINE_WIDTH)
 
+    @staticmethod
+    def selectSquare():
+        clock = pygame.time.Clock()
+        
+        done=False
+        while not done:
+            for event in pygame.event.get():
+                if event.type== pygame.QUIT:
+                    done=True
+                if event.type == pygame.MOUSEBUTTONUP:
+                    pos = pygame.mouse.get_pos()
+                    row = pos[1]/SQUARE_SIZE
+                    col = pos[0]/SQUARE_SIZE
+                    
+                    return row,col
+                    
+                    
+            clock.tick(20)
+        pygame.quit()
            
                 
                 
@@ -94,4 +107,5 @@ BoardDrawer.draw(state)
 BoardDrawer.drawStateSquare(0,0,'KB')
 BoardDrawer.highlightSquare(0,0,YELLOW)
 pygame.display.flip()
+print BoardDrawer.selectSquare()
 
