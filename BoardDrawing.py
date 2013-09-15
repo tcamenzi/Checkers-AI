@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 
-#testing
+#testing123
 ##width = 400
 ##height = 400
 ##NUM_SQUARES = 8
