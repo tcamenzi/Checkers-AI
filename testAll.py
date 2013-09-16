@@ -3,13 +3,15 @@ from FakeGui import FakeGui
 from HumanAgent import HumanAgent 
 from Environment import Environment 
 from RandomAgent import RandomAgent 
+from MemorizeStateAgent import MemorizeStateAgent
+from MemorizeMonteCarlo import MemorizeMonteCarlo
 from time import sleep
-import datetime, random
+import datetime, random, pickle
 time = datetime.datetime.now
 
 
 # Agent1 = HumanAgent(GUI, Environment, 'R')
-Agent1 = RandomAgent(Environment, 'R')
+Agent1 = MemorizeMonteCarlo(Environment, 'R')
 Agent2 = RandomAgent(Environment, 'B')
 # Agent2 = HumanAgent(GUI, Environment, 'B')
 
@@ -33,7 +35,6 @@ def playGame(agent1, agent2, environment, gui):
 
 		gui.highlightSquare(move[0][0], move[0][1])
 		gui.highlightSquare(move[1][0], move[1][1])
-		# sleep(.1)
 		state = environment.updateState(state, move) 
 		gui.draw(state)
 
@@ -52,8 +53,29 @@ def playGame(agent1, agent2, environment, gui):
 		state = environment.updateState(state, move) 
 		gui.draw(state)
 
+for i in range(4000):
+	playGame(Agent1, Agent2, Environment, FakeGui)
 
 
+print "Num wins: ", Agent1.numWins
+print "Num Losses: ", Agent1.numLosses
+
+
+f = open("data", 'wb')
+pickle.dump(Agent1.stateValueFxn, f)
+f.close()
+
+mymap =pickle.load(open('data', 'rb'))
+print "num elems in map: ", len(mymap)
+i=0
+for item in mymap:
+	i+=1
+	if mymap[item]!=1:
+		for row in item:
+			print row
+		print mymap[item]
+	if i>10:
+		break
 
 
 		
