@@ -11,13 +11,7 @@ SQUARE_SIZE = DISPLAY_SIZE / NUM_SQUARES
 PIECE_RADIUS = int(   (SQUARE_SIZE/2)*.87   )
 RED_PIECE_COLOR = (255,0,0)
 RED_SQUARE_COLOR = (200,0,0)
-RED = (255,0,0)
-GREEN = (0,255,0)
-YELLOW = (255,255,0)
-BLACK = (0,0,0)
-GREY = (40,40,30)
-WHITE = (255,255,255)
-BLUE = (0,0,255)
+
 KING_FONT = pygame.font.Font(None, 40)
 FONT_COLOR = (100,100,100)
 CIRCLE_OUTLINE_WIDTH = 0
@@ -61,7 +55,6 @@ class GUI:
     def drawStateSquare(row,col,stateSquare):
         #stateSquare has a B for black, R for red
         # and K for king
-        print "drawing state square", row, col, stateSquare 
         rowcenter = int( (row+.5)*SQUARE_SIZE)
         colcenter = int((col+.5)*SQUARE_SIZE)
         color = RED_PIECE_COLOR if 'R' in stateSquare else BLACK if 'B' in stateSquare else None
@@ -74,12 +67,17 @@ class GUI:
                 text = KING_FONT.render('K', True, FONT_COLOR)
                 tw = text.get_width()
                 th = text.get_height()
-                window.blit(text, [rowcenter-tw/2, colcenter - th/2])
+                window.blit(text, [colcenter-tw/2, rowcenter - th/2])
+                print "I JUST DREW A KING"
 
     @staticmethod
     def drawCircle(rowcenter, colcenter, color):
         pygame.draw.circle(window, CIRCLE_OUTLINE_COLOR, (colcenter, rowcenter), PIECE_RADIUS, CIRCLE_OUTLINE_WIDTH)
         pygame.draw.circle(window, color, (colcenter, rowcenter), PIECE_RADIUS - CIRCLE_OUTLINE_WIDTH)
+
+    @staticmethod
+    def deselectAll():
+        GUI.draw(GUI.boardState)
 
     @staticmethod
     def selectSquare():

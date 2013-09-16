@@ -19,6 +19,9 @@ class Environment:
 
 	@staticmethod
 	def updateState(state, move):
+		start = move[0]
+		color = 'R' if 'R' in state[start[0]][start[1]] else 'B'
+
 		mutableState = list(list(row) for row in state)
 		for startstate, endstate in zip(move[:-1], move[1:]):
 			startrow = startstate[0]
@@ -39,6 +42,19 @@ class Environment:
 
 			mutableState[endrow][endcol] = piece
 
+		endrow = move[-1][0]
+		endcol = move[-1][1]
+		if color=='R' and endrow==RED_KING_ROW:
+			if not 'K' in mutableState[endrow][endcol]:
+				print 'KINGING'
+				mutableState[endrow][endcol]+='K'
+
+		elif color=='B' and endrow == BLACK_KING_ROW:
+			if not 'K' in mutableState[endrow][endcol]:
+				print 'KINGING'
+				mutableState[endrow][endcol]+='K'
+
+
 		updatedState = tuple(tuple(row) for row in mutableState)
 		return updatedState 
 
@@ -47,8 +63,16 @@ class Environment:
 		return row>=0 and row<NUM_SQUARES and col>=0 and col<NUM_SQUARES
 
 	@staticmethod
-	def getDiagonals(row, col):
-		for rowoffset in (-1,1):
+	def getDiagonals(row, col, isKing, color):
+		if isKing:
+			rowoffsets = (-1,1)
+		else:
+			if color=='R':
+				rowoffsets = (RED_DIRECTION,)
+			else: 
+				rowoffsets = (BLACK_DIRECTION,)
+
+		for rowoffset in rowoffsets: #(-1,1):
 			for coloffset in (-1,1):
 				if Environment.inBounds(row+rowoffset, col+coloffset):
 					yield (row+rowoffset, col+coloffset)
@@ -63,28 +87,32 @@ class Environment:
 	def handleJump(state, row, col, diagrow, diagcol, color):
 		endrow = row+2*(diagrow-row)
 		endcol = col+2*(diagcol-col)
-		move = ((row, col), (endrow, endcol))
-		statePostJump = Environment.updateState(state,move)
+		move = ((row, col),(endrow, endcol))
+		statePostJump = Environment.updateState(state,((row, col),)+move)
+		print "yielding move: ", move 
 		yield move
 		for postJumpMove in Environment.getJumpsForPiece(statePostJump, endrow, endcol, color):
-			yield move+postJumpMove
+			yield ((row, col),)+postJumpMove
 
 	@staticmethod
 	def getJumpsForPiece(state,row,col,color):
-		for diagrow, diagcol in Environment.getDiagonals(row,col):
+		print "getJumpsForPiece: row, col, color ", row, col, color 
+		isKing = 'K' in state[row][col]
+		for diagrow, diagcol in Environment.getDiagonals(row,col, isKing, color):
 			if opposing(color) in state[diagrow][diagcol]: #opponent piece there
 				print "opposing piece at: ", diagrow, diagcol
-				print "color: ", color, "opposing: ", opposing(color) 
 				if Environment.canJump(state, row, col, diagrow, diagcol): #is the landing spot clear?
 					for move in Environment.handleJump(state, row, col, diagrow, diagcol, color):
 						yield move 
+
 	@staticmethod
 	def getMovesForPiece(state,row,col, color):
-		print "row, col: ", row, col 
-		for diagrow, diagcol in Environment.getDiagonals(row,col):
+		print "getMovesForPiece. row, col: ", row, col 
+		isKing = 'K' in state[row][col]
+		for diagrow, diagcol in Environment.getDiagonals(row,col, isKing, color):
 			# print "diagrowcol:" , diagrow, diagcol 
 			if state[diagrow][diagcol]=='': #empty
-				yield ((diagrow, diagcol),)
+				yield ( (row, col), (diagrow, diagcol))
 
 		for move in Environment.getJumpsForPiece(state,row,col,color):
 			yield move 
@@ -92,12 +120,12 @@ class Environment:
 
 	@staticmethod
 	def getMoves(state, color):
-		print "color: ", color
+		print "getMoves for color ", color
 		for row in range(len(state)):
 			for col in range(len(state[0])):
 				if color in state[row][col]:
 					for move in Environment.getMovesForPiece(state, row, col, color):
-						yield ((row,col),) + move 
+						yield move 
 
 
 

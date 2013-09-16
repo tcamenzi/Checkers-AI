@@ -12,10 +12,15 @@ def playGame(agent1, agent2, environment, gui):
 	gui.draw(state)
 	while(True):
 		move = agent1.nextMove(state)
-		print "move: ", move 
+		state = environment.updateState(state, move) 
+		for row in state:
+			print row
+		gui.draw(state)
+
+		move = agent2.nextMove(state)
 		state = environment.updateState(state, move) 
 		gui.draw(state)
-		
+
 
 
 
