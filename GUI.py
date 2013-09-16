@@ -4,7 +4,6 @@ from Globals import *
 import pygame
 import sys
 pygame.init()
-print "INITIALIZED"
 
 DISPLAY_SIZE = 400
 SQUARE_SIZE = DISPLAY_SIZE / NUM_SQUARES
@@ -68,7 +67,6 @@ class GUI:
                 tw = text.get_width()
                 th = text.get_height()
                 window.blit(text, [colcenter-tw/2, rowcenter - th/2])
-                print "I JUST DREW A KING"
 
     @staticmethod
     def drawCircle(rowcenter, colcenter, color):
@@ -105,13 +103,5 @@ class GUI:
                 
 
 
-
-# state = []        
-# for i in range(8):
-#     state.append(['RK']*8)
-# GUI.draw(state)
-# # GUI.drawStateSquare(0,0,'KB')
-# # GUI.highlightSquare(0,0,YELLOW)
-# # pygame.display.flip()
-# print GUI.selectSquare()
+ 
 

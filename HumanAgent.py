@@ -6,6 +6,14 @@ class HumanAgent:
 		self.environment = environment 
 		self.color = color 
 
+	def noteWin(self):
+		pass
+
+	def noteLoss(self):
+		pass
+
+	# def learn(self, prevstate, nextstate, reward):
+	# 	pass
 
 	def getStartState(self, state):
 		start = self.gui.selectSquare()
@@ -19,8 +27,6 @@ class HumanAgent:
 	Else return the move you selected which is in 
 	validMoves.'''
 	def selectValidMove(self, validMoves, quitstate):
-		print "validMoves: ", validMoves
-		print 'quitstate: ', quitstate
 		if len(validMoves)==0: #no valid moves, must quit
 			return None
 
@@ -43,14 +49,12 @@ class HumanAgent:
 		fullMove = (start,)
 
 		possibleMoves = [move for move in self.environment.getMovesForPiece(state, start[0], start[1],self.color)] 
-		print "possibleMoves: ", possibleMoves 
 
 		validMoves = [move[1] for move in possibleMoves]
-		print "validMoves here: ", validMoves 
 		currState = self.selectValidMove(validMoves, start)
 		if currState==None:
 			self.gui.deselectAll()
-			return None
+			return -1
 		fullMove+=(currState,)
 
 		index = 2
@@ -65,69 +69,16 @@ class HumanAgent:
 			#advance one
 			fullMove+=(nextState,) 
 			currState = nextState
-			index+=1
-
-
-
-		# for move in possibleMoves: #highlight adjacent ones 
-		# 	adjacent = move[1]
-		# 	self.gui.highlightSquare(adjacent[0], adjacent[1])
-
-		# adjacentStates = set([move[1] for move in possibleMoves])
-		# nextState = self.gui.selectSquare()
-		# while nextState not in adjacentStates and nextState!=start: 
-		# 	nextState = self.gui.selectSquare() 
-
-		# self.gui.draw(state)
-
-		# if nextState==start: #deselect it, choose a different piece
-		# 	return None
-
-		# #now, you've commited to making your move. If there are more
-		# #jumps you can do, give the player options to do them.
-
-		# currState = nextState 
-		# index = 2
-		# while(True):
-		# 	adjacentStates = set([])
-		# 	longmoves = [move for move in possibleMoves if len(move)>index]
-		# 	for move in longmoves:
-		# 		adjacent = move[index]
-		# 		adjacentStates.add(adjacent)
-		# 		self.gui.highlightSquare(adjacent[0], adjacent[1])
-
-		# 	nextState = self.gui.selectSquare()
-		# 	while nextState not in adjacentStates and nextState!=currState: 
-		# 		nextState = self.gui.selectSquare() 
-		# 	if nextState == currState:
-		# 		return (start, currState)
-		# 	index+=1
-
-
-		
-
-
-		
-
-		# self.gui.draw(state)
-		# #If they click on a piece and then decide not to move it,
-		# #let them deselct by clicking on the same piece again.
-		# if end==start:
-		# 	return None
-
-		# # self.gui.highlightSquare(end[0], end[1], GREEN)
-		# # pathsToEnd = set([move for move in possibleMoves if move[-1]==end])
-		# # print "paths to end"
-		# # print len(pathsToEnd)
-		# # print pathsToEnd
-		# return (start, end)
+			index+=1		
 
 	def nextMove(self, state):
 		
-		move = None
-		while(move==None):
+		moves = [item for item in self.environment.getMoves(state,self.color)] 
+		if len(moves)==0:
+			return None
+		move = -1
+		while(move==-1):
 			move = self.attemptMove(state)
-		print "MOVE BEING RETURNED: ", move 
 		return move 
 
 		
