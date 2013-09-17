@@ -1,4 +1,4 @@
-from GUI import GUI 
+
 from FakeGui import FakeGui
 from HumanAgent import HumanAgent 
 from Environment import Environment 
@@ -15,7 +15,7 @@ time = datetime.datetime.now
 Agent1 = FeatureAgent(Environment, 'R')
 # Agent1 = MemorizeStateAgent(Environment, 'R')
 # Agent1 = RandomAgent(Environment, 'R')
-Agent2 = RandomAgent(Environment, 'B')
+Agent2 = FeatureAgent(Environment, 'B')
 # Agent2 = HumanAgent(GUI, Environment, 'B')
 
 
@@ -23,62 +23,44 @@ def playGame(agent1, agent2, environment, gui, sleepTime):
 	state = environment.getStartState()
 	gui.draw(state)
 
-	# agent1PrevState = None
-	# agent1NextState = None
-
-	# agent2PrevState = None
-	# agent2NextState = None
-
 	counter=0
 	while(True):
 		counter+=1
-		print "round #",counter
-		print "agent1 getting move"
+		if counter>1000: #tie; some states = no end
+			break
 		move = agent1.nextMove(state)
 		if move==None: #agent 1 has no available moves and has lost
-			print "NO MOVES FOR AGENT 1"
 			agent1.noteLoss()
 			agent2.noteWin()
 			break
-		print "agent 1 highlighting"
 		gui.highlightSquare(move[0][0], move[0][1])
 		gui.highlightSquare(move[1][0], move[1][1])
-		print "agent 1 highlighting done"
 		sleep(sleepTime)
-		print "agent 1 environment updating state"
 		state = environment.updateState(state, move) 
-		print "agent 1 drawing state"
 		gui.draw(state)
 
-		# agent1NextState = state 
-		# agent1.learn(agent1PrevState, agent1NextState, 0)
-		# agent1PrevState = agent1NextState 
-
-		print "agent2 getting move"
 		move = agent2.nextMove(state)
 		if move==None:
-			print "NO MOVES FOR AGENT 2"
 			agent1.noteWin()
 			agent2.noteLoss()
 			break
-		print "agent 2 highlighting"
 		gui.highlightSquare(move[0][0], move[0][1])
 		gui.highlightSquare(move[1][0], move[1][1])
-		print "agent 2 highlighting done"
 		sleep(sleepTime)
-		print "agent 2 environment updating state"
 		state = environment.updateState(state, move) 
-		print "agent 2 drawing state"
 		gui.draw(state)
 
-for i in range(100):
+for i in range(200):
 	playGame(Agent1, Agent2, Environment, FakeGui, 0)
+	if i%10==0:
+		print i
 
 print Agent1.numWins
 print Agent1.numLosses
 for feature in Agent1.featureWeights:
 	print feature, Agent1.featureWeights[feature]
 
+from GUI import GUI 
 playGame(Agent1, Agent2, Environment, GUI, 1)
 # for i in range(4000):
 # 	playGame(Agent1, Agent2, Environment, FakeGui)
