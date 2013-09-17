@@ -13,8 +13,6 @@ RED_SQUARE_COLOR = (200,0,0)
 
 KING_FONT = pygame.font.Font(None, 40)
 FONT_COLOR = (100,100,100)
-CIRCLE_OUTLINE_WIDTH = 0
-CIRCLE_OUTLINE_COLOR = BLUE
 
 window = pygame.display.set_mode((DISPLAY_SIZE, DISPLAY_SIZE))
 
@@ -28,6 +26,15 @@ class GUI:
     boardState = None
     @staticmethod 
     def draw(state):
+
+        '''This code lets you quit the screen.... but more importantly,
+        looping through the events prevents the screen from freezing.
+        Otherwise the OS sends the screen events which it doesn't respond to,
+        so the OS thinks it is unresponsive and tries to freeze it.'''
+        for event in pygame.event.get():
+            if event.type== pygame.QUIT:
+                sys.exit(1)
+
         GUI.boardState = state
         for row in range(NUM_SQUARES):
             for col in range(NUM_SQUARES):
@@ -35,6 +42,7 @@ class GUI:
                 GUI.drawSquare(row, col, color)
                 GUI.drawStateSquare(row,col, state[row][col])
         pygame.display.flip()
+
 
     @staticmethod
     def drawSquare(row,col,color):
@@ -45,6 +53,7 @@ class GUI:
            
     @staticmethod
     def highlightSquare(row,col,color=YELLOW):
+
         GUI.drawSquare(row,col,color)
         GUI.drawStateSquare(row, col, GUI.boardState[row][col])
         pygame.display.flip()
@@ -70,33 +79,33 @@ class GUI:
 
     @staticmethod
     def drawCircle(rowcenter, colcenter, color):
-        pygame.draw.circle(window, CIRCLE_OUTLINE_COLOR, (colcenter, rowcenter), PIECE_RADIUS, CIRCLE_OUTLINE_WIDTH)
-        pygame.draw.circle(window, color, (colcenter, rowcenter), PIECE_RADIUS - CIRCLE_OUTLINE_WIDTH)
+        # pygame.draw.circle(window, CIRCLE_OUTLINE_COLOR, (colcenter, rowcenter), PIECE_RADIUS, CIRCLE_OUTLINE_WIDTH)
+        pygame.draw.circle(window, color, (colcenter, rowcenter), PIECE_RADIUS)
 
-    @staticmethod
-    def deselectAll():
-        GUI.draw(GUI.boardState)
+    # @staticmethod
+    # def deselectAll():
+    #     GUI.draw(GUI.boardState)
 
-    @staticmethod
-    def selectSquare():
-        clock = pygame.time.Clock()
+    # @staticmethod
+    # def selectSquare():
+    #     clock = pygame.time.Clock()
         
-        done=False
-        while not done:
-            for event in pygame.event.get():
-                if event.type== pygame.QUIT:
-                    done=True
-                if event.type == pygame.MOUSEBUTTONUP:
-                    pos = pygame.mouse.get_pos()
-                    row = pos[1]/SQUARE_SIZE
-                    col = pos[0]/SQUARE_SIZE
+    #     done=False
+    #     while not done:
+    #         for event in pygame.event.get():
+    #             if event.type== pygame.QUIT:
+    #                 done=True
+    #             if event.type == pygame.MOUSEBUTTONUP:
+    #                 pos = pygame.mouse.get_pos()
+    #                 row = pos[1]/SQUARE_SIZE
+    #                 col = pos[0]/SQUARE_SIZE
                     
-                    return row,col
+    #                 return row,col
                     
                     
-            clock.tick(20)
-        pygame.quit()
-        sys.exit(0)
+    #         clock.tick(20)
+    #     pygame.quit()
+    #     sys.exit(0)
            
                 
                 
